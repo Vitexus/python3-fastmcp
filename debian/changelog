@@ -1,3 +1,14 @@
+fastmcp (4.0.0~a2-1) unstable; urgency=medium
+
+  * Update to upstream v4.0.0a2
+  * NEW: fastmcp_remote and fastmcp_tasks workspace members added
+  * FIXED: Remove websockets-sansio dependency (no longer used in v4.0.0)
+  * Update dependencies: mcp-types==2.0.0b2, authlib>=1.2.0, cyclopts>=0.13.0
+  * Workspace restructure: now includes fastmcp_slim (core), fastmcp_remote
+    (remote protocol), and fastmcp_tasks (task execution)
+
+ -- Vítězslav Dvořák <info@vitexsoftware.cz>  Fri, 25 Jul 2026 11:00:00 +0200
+
 fastmcp (3.4.2-1) unstable; urgency=medium
 
   * Update to upstream v3.4.2
