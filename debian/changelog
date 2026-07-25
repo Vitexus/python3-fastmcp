@@ -1,3 +1,14 @@
+fastmcp (4.0.0~a2-1.1) unstable; urgency=high
+
+  * Pragmatic dependency adjustment: Use flexible version constraints
+    for python3-mcp to work with existing Debian repo state
+  * Remove python3-httpx2 and python3-mcp-types hard dependencies
+    (designed for future repo state with updated packages)
+  * Effective for internal deployments where fastmcp 4.0.0a2 is
+    installed via pip alongside the package
+
+ -- Vítězslav Dvořák <info@vitexsoftware.cz>  Fri, 25 Jul 2026 11:15:00 +0200
+
 fastmcp (4.0.0~a2-1) unstable; urgency=medium
 
   * Update to upstream v4.0.0a2
