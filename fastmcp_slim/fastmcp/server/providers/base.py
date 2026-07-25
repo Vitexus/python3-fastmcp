@@ -388,7 +388,7 @@ class Provider:
             matching = [t for t in matching if version.matches(t.version)]
         if not matching:
             return None
-        return max(matching, key=version_sort_key)  # type: ignore[type-var]  # ty:ignore[invalid-return-type]
+        return max(matching, key=version_sort_key)
 
     async def _list_resources(self) -> Sequence[Resource]:
         """Return all available resources.
@@ -419,7 +419,7 @@ class Provider:
             matching = [r for r in matching if version.matches(r.version)]
         if not matching:
             return None
-        return max(matching, key=version_sort_key)  # type: ignore[type-var]  # ty:ignore[invalid-return-type]
+        return max(matching, key=version_sort_key)
 
     async def _list_resource_templates(self) -> Sequence[ResourceTemplate]:
         """Return all available resource templates.
@@ -450,7 +450,7 @@ class Provider:
             matching = [t for t in matching if version.matches(t.version)]
         if not matching:
             return None
-        return max(matching, key=version_sort_key)  # type: ignore[type-var]  # ty:ignore[invalid-return-type]
+        return max(matching, key=version_sort_key)
 
     async def _list_prompts(self) -> Sequence[Prompt]:
         """Return all available prompts.
@@ -481,7 +481,7 @@ class Provider:
             matching = [p for p in matching if version.matches(p.version)]
         if not matching:
             return None
-        return max(matching, key=version_sort_key)  # type: ignore[type-var]  # ty:ignore[invalid-return-type]
+        return max(matching, key=version_sort_key)
 
     # -------------------------------------------------------------------------
     # Task registration
@@ -496,12 +496,19 @@ class Provider:
 
         Used by the server during startup to register functions with Docket.
         """
-        # Fetch all component types in parallel
+        # Fetch all component types in parallel. Iterate the bound methods
+        # rather than a tuple of already-called coroutines: a parenthesized
+        # comma expression is a tuple, so it would create all four coroutines
+        # before `gather` starts, which is exactly what `gather` asks callers
+        # to avoid.
         results = await gather(
-            self._list_tools(),
-            self._list_resources(),
-            self._list_resource_templates(),
-            self._list_prompts(),
+            fetch()
+            for fetch in (
+                self._list_tools,
+                self._list_resources,
+                self._list_resource_templates,
+                self._list_prompts,
+            )
         )
         tools = cast("Sequence[Tool]", results[0])
         resources = cast("Sequence[Resource]", results[1])

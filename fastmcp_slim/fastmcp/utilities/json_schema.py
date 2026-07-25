@@ -498,6 +498,11 @@ def _single_pass_optimize(
     if not (prune_defs or prune_titles or prune_additional_properties):
         return schema  # Nothing to do
 
+    # Work on a copy so the caller's schema is never mutated (see docstring). The
+    # pruning phases below pop keys/$defs in place, which would otherwise corrupt a
+    # shared dict such as a live Tool.input_schema passed straight to compress_schema.
+    schema = copy.deepcopy(schema)
+
     # Phase 1: Collect references and apply simple cleanups
     # Track which $defs are referenced from the main schema and from other $defs
     root_refs: set[str] = set()  # $defs referenced directly from main schema
@@ -531,7 +536,7 @@ def _single_pass_optimize(
             # this regardless of `in_schema` — a $ref in a user extension
             # still pins the referenced $def as "used".
             if prune_defs:
-                ref = node.get("$ref")  # type: ignore
+                ref = node.get("$ref")
                 if isinstance(ref, str) and ref.startswith("#/$defs/"):
                     referenced_def = ref.split("/")[-1]
                     if current_def_name:
@@ -565,7 +570,7 @@ def _single_pass_optimize(
 
                 if (
                     prune_additional_properties
-                    and node.get("additionalProperties") is False  # type: ignore
+                    and node.get("additionalProperties") is False
                 ):
                     node.pop("additionalProperties")  # type: ignore
 
