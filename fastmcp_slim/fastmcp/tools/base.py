@@ -52,6 +52,16 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
+def _default_title(name: str) -> str:
+    """Derive a display title from a tool name.
+
+    The MCP spec says clients should fall back to `name` for display when
+    `title` is absent, but some clients (e.g. ChatGPT) instead drop the tool
+    entirely. Always emitting a title avoids depending on that fallback.
+    """
+    return name.replace("_", " ").replace("-", " ").title()
+
+
 def resolve_serialize_by_alias(value: Any) -> bool:
     """Resolve the effective ``by_alias`` setting for serializing *value*.
 
@@ -263,21 +273,28 @@ class Tool(FastMCPComponent):
         **overrides: Any,
     ) -> MCPTool:
         """Convert the FastMCP tool to an MCP tool."""
-        title = None
+        # Title precedence follows the effective (post-override) values, so a
+        # caller renaming or re-annotating a tool doesn't get a stale title.
+        name = overrides.get("name", self.name)
+        annotations = overrides.get("annotations", self.annotations)
+        if isinstance(annotations, dict):
+            annotations = ToolAnnotations(**annotations)
 
         if self.title:
             title = self.title
-        elif self.annotations and self.annotations.title:
-            title = self.annotations.title
+        elif annotations and annotations.title:
+            title = annotations.title
+        else:
+            title = _default_title(name)
 
         mcp_tool = MCPTool(
-            name=overrides.get("name", self.name),
+            name=name,
             title=overrides.get("title", title),
             description=overrides.get("description", self.description),
             input_schema=overrides.get("inputSchema", self.parameters),
             output_schema=overrides.get("outputSchema", self.output_schema),
             icons=overrides.get("icons", self.icons),
-            annotations=overrides.get("annotations", self.annotations),
+            annotations=annotations,
             execution=overrides.get("execution", self.execution),
             _meta=overrides.get(  # type: ignore[call-arg]  # _meta is Pydantic alias for meta field
                 "_meta", self.get_meta()
@@ -518,15 +535,17 @@ def _get_tool_resolver(app_name: str | None = None) -> Callable[..., str] | None
 
 
 def _prefab_to_json(app: Any, fastmcp_app_name: str | None = None) -> dict[str, Any]:
-    """Call PrefabApp.to_json() with the hash-based resolver.
+    """Serialize a PrefabApp, addressing its peer-tool references by identity.
 
-    The resolver prefixes peer-tool references with a deterministic hash
-    derived from the app name + tool name. The dispatcher recognizes that
-    format and routes calls via ``get_tool_by_hash`` which walks the
-    provider tree recursively — same pattern as the old ``get_app_tool``.
+    The resolver writes each reference as ``<hash>_<local_name>``, and the
+    identity behind it is recorded in the payload's meta so that servers
+    can re-address the reference on the way out without losing track of
+    what it points at.
     """
+    from fastmcp.server.providers.prefab_payload import annotate_payload_identities
+
     data = app.to_json(tool_resolver=_get_tool_resolver(fastmcp_app_name))
-    return data
+    return annotate_payload_identities(data)
 
 
 def _get_fastmcp_app_name(tool: Tool) -> str | None:
