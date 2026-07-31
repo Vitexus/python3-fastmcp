@@ -1,3 +1,11 @@
+fastmcp (4.0.0~a2-1.2) unstable; urgency=medium
+
+  * Restore proper python3-mcp/python3-mcp-types/python3-httpx2
+    dependencies now that repo publishes mcp 2.0.0 stable (supersedes
+    2.0.0b2).
+
+ -- Vítězslav Dvořák <info@vitexsoftware.cz>  Fri, 31 Jul 2026 14:25:01 +0200
+
 fastmcp (4.0.0~a2-1.1) unstable; urgency=high
 
   * Pragmatic dependency adjustment: Use flexible version constraints

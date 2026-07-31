@@ -11,8 +11,11 @@ override_dh_auto_configure:
 	# Backup original pyproject.toml
 	cp fastmcp_slim/pyproject.toml fastmcp_slim/pyproject.toml.orig
 	# Patch pyproject.toml to use a static version and dependency list
-	# instead of uv-dynamic-versioning / hatch optional-dependency hooks
-	python3 debian/patch-pyproject.py fastmcp_slim/pyproject.toml 3.4.2
+	# instead of uv-dynamic-versioning / hatch optional-dependency hooks.
+	# Derive the PEP 440 upstream version from debian/changelog (e.g.
+	# "4.0.0~a2-1.2" -> "4.0.0a2") so this never goes stale on version bumps.
+	python3 debian/patch-pyproject.py fastmcp_slim/pyproject.toml \
+		"$$(dpkg-parsechangelog --show-field Version | sed -e 's/-[^-]*$$//' -e 's/~//')"
 	dh_auto_configure
 
 override_dh_auto_test:
