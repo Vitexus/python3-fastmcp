@@ -12,8 +12,8 @@ Build-Depends:
  python3-pip,
 Standards-Version: 4.7.0
 Homepage: https://gofastmcp.com
-Vcs-Git: https://github.com/jlowin/fastmcp.git
-Vcs-Browser: https://github.com/jlowin/fastmcp
+Vcs-Git: https://github.com/Vitexus/python3-fastmcp.git
+Vcs-Browser: https://github.com/Vitexus/python3-fastmcp
 Rules-Requires-Root: no
 
 Package: python3-fastmcp
@@ -21,15 +21,19 @@ Architecture: all
 Depends:
  ${misc:Depends},
  ${python3:Depends},
+ python3-aiofile (>= 3.5.0),
+ python3-anyio (>= 4.4.0),
  python3-authlib,
+ python3-cachetools,
  python3-cyclopts,
  python3-dotenv,
  python3-exceptiongroup,
  python3-griffelib,
  python3-httpx2 (>= 2.5.0),
- python3-joserfc,
+ python3-joserfc (>= 1.5.0),
  python3-jsonref,
  python3-jsonschema-path,
+ python3-keyring (>= 25.6.0),
  python3-mcp (>= 2.0.0),
  python3-mcp-types (>= 2.0.0),
  python3-openapi-pydantic,
@@ -44,7 +48,7 @@ Depends:
  python3-rich,
  python3-starlette,
  python3-typing-extensions,
- python3-uncalled-for,
+ python3-uncalled-for (>= 0.4.0),
  python3-uvicorn,
  python3-watchfiles,
  python3-websockets,

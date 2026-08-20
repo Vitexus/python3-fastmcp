@@ -1,3 +1,23 @@
+fastmcp (4.0.0~b3-1) unstable; urgency=medium
+
+  * Update to upstream v4.0.0b3, merged from PrefectHQ:main (06896afb).
+  * Raise the uncalled-for floor to >= 0.4.0, matching upstream. 4.0.0b3
+    needs the call-scoped binding API added in that release, and the
+    archive previously carried only 0.3.2.
+  * Raise the joserfc floor to >= 1.5.0, matching upstream and correcting
+    a drift where this packaging declared >= 1.1.0. The JWT provider
+    accepts Ed25519 and Ed448, which joserfc registers only from 1.5.0;
+    against 1.1.0 just the legacy EdDSA name exists.
+  * Declare the concrete packages behind the py-key-value-aio
+    [filetree,keyring,memory] extras, which Debian dependencies cannot
+    express: python3-cachetools, python3-keyring, python3-aiofile and
+    python3-anyio. Because nothing declared cachetools, apt autoremove
+    reclaimed it and broke every 'fastmcp run' invocation on hosts that
+    had it only as an automatically installed package.
+  * Point Vcs-* at the renamed Vitexus/python3-fastmcp repository.
+
+ -- Vítězslav Dvořák <info@vitexsoftware.cz>  Thu, 20 Aug 2026 19:03:46 +0200
+
 fastmcp (4.0.0~b1-1) unstable; urgency=medium
 
   * Update to upstream v4.0.0b1 ("Fourgone Conclusion"), merged from
