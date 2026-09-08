@@ -104,6 +104,17 @@ PROXY_TRANSPORT_OPTIONS = TransportOptions(
 )
 
 
+def _with_proxy_transport_options(
+    options: TransportOptions | None,
+) -> TransportOptions:
+    """Layer proxy-owned settings onto options supplied by another client layer."""
+    return replace(
+        options or TransportOptions(),
+        session_class=PROXY_TRANSPORT_OPTIONS.session_class,
+        forward_incoming_headers=PROXY_TRANSPORT_OPTIONS.forward_incoming_headers,
+    )
+
+
 #: Transport-level failures that can escape a backend connection attempt.
 #: `Client._connect` wraps most connect failures in a ``RuntimeError("Client
 #: failed to connect: ...")``, but a transport can also surface an httpx or
@@ -1353,7 +1364,8 @@ def _create_client_factory(
             # stopping at the composite router (see
             # `TransportOptions.backend_mode`).
             fresh._transport_options = replace(
-                PROXY_TRANSPORT_OPTIONS, backend_mode=fresh.mode
+                _with_proxy_transport_options(fresh._transport_options),
+                backend_mode=fresh.mode,
             )
             return fresh
 
@@ -1423,7 +1435,8 @@ def _create_client_factory(
                 # moment a client is built for this request — so it tracks the
                 # front era rather than whatever was true at construction.
                 fresh._transport_options = replace(
-                    PROXY_TRANSPORT_OPTIONS, backend_mode=backend_mode
+                    _with_proxy_transport_options(fresh._transport_options),
+                    backend_mode=backend_mode,
                 )
             return fresh
 
@@ -1522,7 +1535,7 @@ async def default_proxy_roots_handler(
     backend's client, so it relays the request onto its own front session. This
     reaches the wire through the SDK session rather than a `Context` method:
     `ctx.list_roots()` is not part of FastMCP's server-authoring API, because
-    SEP-2577 removed server-initiated requests from the modern protocol. The
+    SEP-2322 removed server-initiated requests from the modern protocol. The
     relay exists only for handshake-era interop on both legs.
     """
     ctx = get_context()
@@ -1744,7 +1757,7 @@ class ProxyClient(Client[ClientTransportT]):
                 self._proxy_restoring_handler_keys.add(key)
         super().__init__(transport=transport, **kwargs)  # ty: ignore[no-matching-overload]
 
-        self._transport_options = PROXY_TRANSPORT_OPTIONS
+        self._transport_options = _with_proxy_transport_options(self._transport_options)
 
     def _bind_restoring_handlers(self) -> None:
         if "roots" in self._proxy_restoring_handler_keys:
