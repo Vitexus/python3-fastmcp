@@ -45,7 +45,7 @@ one gets a follow-up patch, never a re-tag.
    both blocks (the last argument is the branch the notes are generated against):
 
    ```bash
-   uv run .claude/skills/release/scripts/changelog_entry.py v<new> v<prev> "<pun>" /tmp/notes.md <branch>
+   uv run .agents/skills/release/scripts/changelog_entry.py v<new> v<prev> "<pun>" /tmp/notes.md <branch>
    ```
 
    Validate, and repeat until it reports no errors; a parse error names the file
@@ -141,8 +141,8 @@ connections instead of raising.
 ## Gotchas
 
 - `--generate-notes` copies PR titles verbatim; a title containing `<1`, `{`, or `}`
-  breaks MDX. `scripts/changelog_entry.py` wraps those in backticks; the validator
-  in step 4 catches anything it misses.
+  breaks MDX, and `__name__` renders as bold. `scripts/changelog_entry.py` wraps
+  those in backticks; the validator in step 4 catches anything else.
 - Mintlify's GitHub App also deploys on its own, but it only rebuilds files
   changed since the last commit it recorded, and it records commits it failed on
   or skipped. Only the `Deploy docs` run's verdict counts; its API-triggered

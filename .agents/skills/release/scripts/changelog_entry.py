@@ -1,8 +1,8 @@
 """Insert the release entry into docs/changelog.mdx and docs/updates.mdx.
 
 Usage:
-    uv run .claude/skills/release/scripts/changelog_entry.py v4.0.1 v4.0.0 "Come Back Any Time" notes.md
-    uv run .claude/skills/release/scripts/changelog_entry.py ... --print   # render only
+    uv run .agents/skills/release/scripts/changelog_entry.py v4.0.1 v4.0.0 "Come Back Any Time" notes.md
+    uv run .agents/skills/release/scripts/changelog_entry.py ... --print   # render only
 
 Reads the maintainer-approved notes file for the intro paragraph and pulls the
 PR list from GitHub's generate-notes API, so the docs entry matches what
@@ -73,7 +73,10 @@ def linkify(body: str) -> str:
 
 
 def escape_mdx(text: str) -> str:
-    """Backtick-wrap bare `<digit`, `{`, `}` outside code spans; MDX reads them as JSX."""
+    """Backtick-wrap MDX-sensitive text outside code spans.
+
+    MDX reads bare `<digit`, `{`, and `}` as JSX, and `__name__` as bold.
+    """
 
     def fix(line: str) -> str:
         parts = line.split("`")
@@ -81,6 +84,9 @@ def escape_mdx(text: str) -> str:
             parts[i] = re.sub(r"(<\d[^\s`]*)", r"`\1`", parts[i])
             parts[i] = re.sub(r"(\{[^{}]*\})", r"`\1`", parts[i])
             parts[i] = re.sub(r"(?<!`)([{}])(?!`)", r"`\1`", parts[i])
+            parts[i] = re.sub(
+                r"(?<![\w`/])(__\w+?__(?:\.\w+)?)(?![\w`])", r"`\1`", parts[i]
+            )
         return "`".join(parts)
 
     return "\n".join(fix(line) for line in text.splitlines())
