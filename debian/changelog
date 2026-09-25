@@ -1,5 +1,16 @@
+fastmcp (4.0.10) UNRELEASED; urgency=medium
+
+  * Task-enabled tools now work behind search transforms and CodeMode: 
+    they're registered with the task backend even when hidden, and a tool, 
+    resource, or prompt that calls one through ctx.fastmcp.call_tool() 
+    (including the search call_tool proxy and CodeMode's execute) now gets 
+    its result instead of an empty task receipt.
+
+ -- vitex <info@vitexsoftware.com>  Sat, 26 Sep 2026 00:31:23 +0200
+
 fastmcp (4.0.0~b3-1) unstable; urgency=medium
 
+  [ Vítězslav Dvořák ]
   * Update to upstream v4.0.0b3, merged from PrefectHQ:main (06896afb).
   * Raise the uncalled-for floor to >= 0.4.0, matching upstream. 4.0.0b3
     needs the call-scoped binding API added in that release, and the
@@ -16,7 +27,7 @@ fastmcp (4.0.0~b3-1) unstable; urgency=medium
     had it only as an automatically installed package.
   * Point Vcs-* at the renamed Vitexus/python3-fastmcp repository.
 
- -- Vítězslav Dvořák <info@vitexsoftware.cz>  Thu, 20 Aug 2026 19:03:46 +0200
+ -- vitex <info@vitexsoftware.com>  Sat, 26 Sep 2026 00:31:17 +0200
 
 fastmcp (4.0.0~b1-1) unstable; urgency=medium
 
