@@ -5,7 +5,7 @@
 // debian:forky disabled: Forky is still unstable/research-only.
 // The full Debian package ecosystem is not yet available for Forky.
 // Re-enable once the stack builds cleanly for Forky.
-String[] distributions = ['debian:trixie', 'ubuntu:resolute']
+String[] distributions = ['debian:bookworm', 'debian:trixie', 'ubuntu:jammy', 'ubuntu:noble']
 
 String vendor = 'vitexsoftware'
 //String distroFamily = ''
@@ -21,13 +21,19 @@ properties([
 ])
 node() {
     ansiColor('xterm') {
-        stage('SCM Checkout') {
-            checkout scm
-            // Checked out once here; every parallel branch below unstashes
-            // this instead of hitting GitHub again, so a wide build matrix
-            // costs one clone instead of one per branch.
-            stash name: 'src', useDefaultExcludes: false
-        }
+        stage('Checkout ' + distroName) {
+            unstash 'src'
+
+            def imageName = vendor + '/' + distro
+            buildImage = docker.image(imageName)
+
+            def version = sh(
+                script: 'dpkg-parsechangelog --show-field Version',
+                returnStdout: true
+            ).trim()
+
+            buildVer = version + '.' + env.BUILD_NUMBER + '~' + distroCode
+        }        
     }
 }
 
@@ -79,10 +85,9 @@ distributions.each { distro ->
                         sh 'sudo apt-get update --allow-releaseinfo-change'
                         sh 'echo "INSTALATION"'
                       
-// Ensure abraflexi-webhook-acceptor-sqlite is first in the list
-                    def installOrder = [
-                        'abraflexi-webhook-acceptor-sqlite',
-                    ]
+                        def installOrder = [
+//                        '',
+                        ]
 
                     def sorted_artifacts = artifacts.toList()
                     installOrder.each { pkgPrefix ->
