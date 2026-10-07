@@ -14,8 +14,10 @@ override_dh_auto_configure:
 	# instead of uv-dynamic-versioning / hatch optional-dependency hooks.
 	# Derive the PEP 440 upstream version from debian/changelog (e.g.
 	# "4.0.0~a2-1.2" -> "4.0.0a2") so this never goes stale on version bumps.
+	# Jenkins appends ".<build>~<distro>" to a native-style version
+	# ("4.0.10.34~trixie"); strip that too, or hatchling rejects the result.
 	python3 debian/patch-pyproject.py fastmcp_slim/pyproject.toml \
-		"$$(dpkg-parsechangelog --show-field Version | sed -e 's/-[^-]*$$//' -e 's/~//')"
+		"$$(dpkg-parsechangelog --show-field Version | sed -e 's/-[^-]*$$//' -e 's/\.[0-9][0-9]*~[a-z][a-z]*$$//' -e 's/~//')"
 	dh_auto_configure
 
 override_dh_auto_test:
