@@ -1,3 +1,12 @@
+fastmcp (4.2.0~a1-1) unstable; urgency=medium
+
+  * Set the package version from the packaged upstream snapshot.
+    Vitexus main is v4.2.0a1-31 (merge-base 53630d67); PrefectHQ main is
+    v4.2.0a1-34 and is three commits ahead. The previous 4.1.0 changelog
+    version was behind both.
+
+ -- Vítězslav Dvořák <info@vitexsoftware.cz>  Sun, 01 Nov 2026 19:00:00 +0100
+
 fastmcp (4.1.0-2) unstable; urgency=medium
 
   * Drop [tool.hatch.metadata] allow-direct-references in the pyproject
