@@ -1,3 +1,11 @@
+fastmcp (4.1.0-1) unstable; urgency=medium
+
+  * Strip versioned Python classifiers in debian/patch-pyproject.py.
+    Bookworm's hatchling rejects Programming Language :: Python :: 3.13
+    and aborts the wheel build.
+
+ -- Vítězslav Dvořák <info@vitexsoftware.cz>  Sun, 01 Nov 2026 18:15:00 +0100
+
 fastmcp (4.1.0) unstable; urgency=medium
 
   * New upstream version 4.1.0

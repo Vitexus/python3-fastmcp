@@ -77,6 +77,16 @@ def patch(path: str, version: str) -> None:
     if count != 1:
         raise RuntimeError("could not locate dependencies = [...] block to replace")
 
+    # hatchling shipped with bookworm and jammy rejects classifiers for
+    # Python versions newer than the interpreter it was packaged with
+    # ("Unknown classifier ... Python :: 3.13"). Drop the versioned ones;
+    # they are not needed to build the wheel.
+    text = re.sub(
+        r'\n[ \t]*"Programming Language :: Python :: 3\.\d+",',
+        "",
+        text,
+    )
+
     open(path, "w", encoding="utf-8").write(text)
 
 
