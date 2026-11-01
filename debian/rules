@@ -13,7 +13,7 @@ override_dh_auto_configure:
 	# Patch pyproject.toml to use a static version and dependency list
 	# instead of uv-dynamic-versioning / hatch optional-dependency hooks.
 	# Derive the PEP 440 upstream version from debian/changelog (e.g.
-	# "4.0.0~a2-1.2" -> "4.0.0a2") so this never goes stale on version bumps.
+	# "4.1.4-1" -> "4.1.4"; a Debian tilde is stripped) so this never goes stale.
 	# Jenkins appends ".<build>~<distro>" to a native-style version
 	# ("4.0.10.34~trixie"); strip that too, or hatchling rejects the result.
 	python3 debian/patch-pyproject.py fastmcp_slim/pyproject.toml \
