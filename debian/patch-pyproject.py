@@ -71,6 +71,14 @@ def patch(path: str, version: str) -> None:
         "",
         text,
     )
+    # Jammy's hatchling treats unknown keys under [tool.hatch.metadata] as
+    # metadata hook names and rejects allow-direct-references. The static
+    # dependency list below has no direct references, so the flag is unused.
+    text = re.sub(
+        r"\[tool\.hatch\.metadata\]\nallow-direct-references = true\n+",
+        "",
+        text,
+    )
     text, count = re.subn(
         r"dependencies = \[\n(?:.*\n)*?\]\n", DEPENDENCIES, text, count=1
     )

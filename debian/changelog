@@ -1,3 +1,11 @@
+fastmcp (4.1.0-2) unstable; urgency=medium
+
+  * Drop [tool.hatch.metadata] allow-direct-references in the pyproject
+    patch. Jammy's hatchling treats it as an unknown metadata hook and
+    aborts the wheel build.
+
+ -- Vítězslav Dvořák <info@vitexsoftware.cz>  Sun, 01 Nov 2026 18:25:00 +0100
+
 fastmcp (4.1.0-1) unstable; urgency=medium
 
   * Strip versioned Python classifiers in debian/patch-pyproject.py.
