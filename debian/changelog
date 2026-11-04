@@ -1,3 +1,11 @@
+fastmcp (4.2.0~a3-1) unstable; urgency=medium
+
+  * Merge upstream v4.2.0a3 (PrefectHQ/fastmcp); no breaking changes
+    over 4.2.0a1. pyproject.toml is unchanged by the merge, so the
+    Debian build patches apply as before.
+
+ -- Vítězslav Dvořák <info@vitexsoftware.cz>  Wed, 04 Nov 2026 14:00:00 +0100
+
 fastmcp (4.2.0~a1-1) unstable; urgency=medium
 
   * Set the package version from the packaged upstream snapshot.
