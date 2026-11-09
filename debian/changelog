@@ -1,3 +1,12 @@
+fastmcp (4.2.0~a3-2) unstable; urgency=medium
+
+  * Merge upstream main (21 commits since v4.2.0a3): auth/security fixes
+    All published fastmcp GHSA advisories (critical GHSA-gpgx-58w2-xwwf
+    RCE and high ones) are patched in <= 4.1.1, already ancestors of
+    this branch. Upstream base: main @ e9bf8640d, 2026-11-09.
+
+ -- vitex <info@vitexsoftware.cz>  Mon, 09 Nov 2026 10:44:32 +0100
+
 fastmcp (4.2.0~a3-1) unstable; urgency=medium
 
   * Merge upstream v4.2.0a3 (PrefectHQ/fastmcp); no breaking changes
